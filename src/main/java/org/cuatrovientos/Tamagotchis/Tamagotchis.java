@@ -43,20 +43,20 @@ public class Tamagotchis implements Runnable{
 	    boolean acertado = false;
 
 	    while (!acertado) {
-	        int num1 = ThreadLocalRandom.current().nextInt(0, 9);
-	        int num2 = ThreadLocalRandom.current().nextInt(0, 10 - num1);
+	        int num1 = ThreadLocalRandom.current().nextInt(0, 10);
+	        int num2 = ThreadLocalRandom.current().nextInt(0, 10);
 	        int resultadoCorrecto = num1 + num2;
 
-	        System.out.println("[" + this.id + "] ¿Cuánto es " + num1 + " + " + num2 + "?");
+	        System.out.println(this.id + " ¿Cuánto es " + num1 + " + " + num2 + "?");
 	        System.out.print("Tu respuesta: ");
 
 	        int respuestaCuidador = teclado.nextInt();
 
 	        if (respuestaCuidador == resultadoCorrecto) {
-	            System.out.println("¡Correcto! " + this.id + " termina de jugar.\n");
+	            System.out.println("Correcto " + this.id + " termina de jugar");
 	            acertado = true;
 	        } else {
-	            System.out.println("Respuesta incorrecta. " + this.id + " sigue jugando...\n");
+	            System.out.println("Respuesta incorrecta. " + this.id + " sigue jugando");
 	        }
 	    }
 
