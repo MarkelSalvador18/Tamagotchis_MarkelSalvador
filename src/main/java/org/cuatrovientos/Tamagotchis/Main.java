@@ -35,8 +35,9 @@ public class Main {
 	            System.out.println("Tamagotchi ID " + t.getId() + " está en estado: " + t.getEstado());
 	            if (t.getEstado() == Estado.JUGANDO) {
 	            t.jugar(scn);
-	            	
-	            	
+	            }
+	            
+	            if (t.getEstado() == Estado.COMIENDO) {
 	            	
 	            }
 	        }

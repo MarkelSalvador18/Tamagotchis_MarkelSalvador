@@ -63,6 +63,13 @@ public class Tamagotchis implements Runnable{
 	    this.estadoActual = Estado.OCIOSO;
 	}
 	
+	public void comer() {
+		this.estadoActual = Estado.COMIENDO;
+		System.out.println(this.id + " Comienza a comer");
+	}
+	
+	
+	
 	
 	
 }
