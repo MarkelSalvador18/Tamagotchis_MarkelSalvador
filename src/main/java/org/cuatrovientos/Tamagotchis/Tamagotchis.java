@@ -1,18 +1,17 @@
 package org.cuatrovientos.Tamagotchis;
 
-import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class Tamagotchis {
+public class Tamagotchis implements Runnable{
+
 
 	private int id;
 	private String nombreTamagotchi;
-	private int suciedad;
-	private static final Duration TIEMPO_VIDA_TAMAGOTCHI = Duration.ofMinutes(5);
+
 	public Tamagotchis(int id, String nombreTamagotchi, int suciedad) {
 		super();
 		this.id = id;
 		this.nombreTamagotchi = nombreTamagotchi;
-		this.suciedad = suciedad;
 	}
 	public int getId() {
 		return id;
@@ -26,14 +25,20 @@ public class Tamagotchis {
 	public void setNombreTamagotchi(String nombreTamagotchi) {
 		this.nombreTamagotchi = nombreTamagotchi;
 	}
-	public int getSuciedad() {
-		return suciedad;
+
+	
+	public void run() {
+		
 	}
-	public void setSuciedad(int suciedad) {
-		this.suciedad = suciedad;
+	
+	public int generarNumeroAleatorios1() {
+		int numeroAleatorio1 = ThreadLocalRandom.current().nextInt(0, 10);
+		return numeroAleatorio1;
+		
 	}
-	public static Duration getTiempoVidaTamagotchi() {
-		return TIEMPO_VIDA_TAMAGOTCHI;
+	public int generarNumeroAleatorios2() {
+		int numeroAleatorio2 = ThreadLocalRandom.current().nextInt(0, 10);
+		return numeroAleatorio2;
 	}
 	
 	
