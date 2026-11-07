@@ -3,9 +3,6 @@ package org.cuatrovientos.Tamagotchis;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.cuatrovientos.Tamagotchis.Tamagotchis.Estado;
 
@@ -27,7 +24,7 @@ public class Main {
             Thread hilo = new Thread(tama);
             
             tama.getEstado();
-            tama.iniciarContadorSuciedad();
+            tama.iniciarContadorSuciedad(scn, hilo);
             
             tama.contadorVida();
 			}
