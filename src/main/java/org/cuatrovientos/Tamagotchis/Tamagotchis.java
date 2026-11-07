@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class Tamagotchis extends Thread implements Runnable{
+public class Tamagotchis extends Thread implements Runnable {
 	public enum Estado {
         OCIOSO, COMIENDO, JUGANDO, LIMPIANDO, MUERTO
     }
@@ -16,8 +16,8 @@ public class Tamagotchis extends Thread implements Runnable{
 	private int suciedad;
 	private Estado estadoActual;
 	
-	public Tamagotchis(String nombreTamagotchi) {
-		this.nombreTamagotchi = nombreTamagotchi;
+	public Tamagotchis(String nombre) {
+		this.nombreTamagotchi = nombre;
 	}
 
     public Estado getEstado() {
@@ -33,9 +33,6 @@ public class Tamagotchis extends Thread implements Runnable{
 	}
 
 	
-	public void run() {
-		
-	}
 	public void jugar(Scanner teclado) {
 	    this.estadoActual = Estado.JUGANDO;
 	    boolean acertado = false;
@@ -138,6 +135,11 @@ public class Tamagotchis extends Thread implements Runnable{
         		System.out.println("¡Han pasado 5 minutos! El tamagotchi da un aviso y muere");
         		scheduler.shutdown();
         }, 5, TimeUnit.MINUTES);
+	}
+	public void morir(String str) {
+		if (str.contains("orden")) {
+			
+		}
 	}
 	
 	
