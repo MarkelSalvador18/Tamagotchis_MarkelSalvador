@@ -70,9 +70,9 @@ public class Tamagotchis extends Thread implements Runnable {
 				
 			}
 		} catch (InterruptedException e) {
-			System.out.println("Tamagotchi " + this.nombreTamagotchi + " fue interrumpido mientras comía.");
+			System.out.println(this.nombreTamagotchi + " fue interrumpido mientras comía.");
 		} finally {
-			System.out.println("Tamagotchi " + this.nombreTamagotchi + ": He terminado de comer la sandia");
+			System.out.println(this.nombreTamagotchi + ": He terminado de comer la sandia");
 	        this.estadoActual = Estado.OCIOSO;
 		}
 		
