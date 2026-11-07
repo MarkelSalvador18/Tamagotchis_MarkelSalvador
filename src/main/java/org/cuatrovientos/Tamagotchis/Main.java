@@ -70,7 +70,7 @@ public class Main {
 			                    break;
 
 			                case "4":
-			                    tamaElegido.limpiar();
+			                    tamaElegido.limpiar(scn, tamaElegido);
 			                    break;
 
 			                case "5":

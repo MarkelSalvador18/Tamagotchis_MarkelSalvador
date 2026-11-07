@@ -15,6 +15,7 @@ public class Tamagotchis extends Thread implements Runnable {
 	private String nombreTamagotchi;
 	private int suciedad;
 	private Estado estadoActual;
+	private final long tiempoNacimiento = System.currentTimeMillis();
 	
 	public Tamagotchis(String nombre) {
 		this.nombreTamagotchi = nombre;
@@ -24,14 +25,12 @@ public class Tamagotchis extends Thread implements Runnable {
     		this.estadoActual = accionAleatoria();
         return this.estadoActual;
     }
+    
+    
 
 	public String getNombreTamagotchi() {
 		return nombreTamagotchi;
 	}
-	public void setNombreTamagotchi(String nombreTamagotchi) {
-		this.nombreTamagotchi = nombreTamagotchi;
-	}
-
 	
 	public void jugar(Scanner teclado) {
 	    this.estadoActual = Estado.JUGANDO;
@@ -58,6 +57,35 @@ public class Tamagotchis extends Thread implements Runnable {
 	    this.estadoActual = Estado.OCIOSO;
 	}
 	
+	@Override
+    public void run() {
+        while (this.vivo) {
+            try {
+                Thread.sleep(20_000);
+
+                if (System.currentTimeMillis() - this.tiempoNacimiento >= GestorTamagotchis.TIEMPO_VIDA_MS) {
+                    System.out.println("aviso, han pasado 5 minutos! " + this.nombreTamagotchi + " ha muerto de vejez");
+                    morir("vejez");
+                    break;
+                }
+
+                this.suciedad = this.suciedad +1;
+                System.out.println("\n[" + this.nombreTamagotchi + "] Suciedad acumulada: " + this.suciedad + "/10");
+
+                if (this.suciedad == 5) {
+                    System.out.println("[AVISO] " + this.nombreTamagotchi + " está bastante sucio. Conviene limpiarlo.");
+                } else if (this.suciedad >= 10) {
+                    System.out.println("\n[" + this.nombreTamagotchi + "] Ha muerto por exceso de suciedad.");
+                    morir("suciedad");
+                    break;
+                }
+
+            } catch (InterruptedException e) {
+                break; 
+            }
+        }
+	}
+	
 	public void comer() {
 		int tiempoAleatorioGenerado = 0;
 		
@@ -65,11 +93,11 @@ public class Tamagotchis extends Thread implements Runnable {
 		System.out.println(this.nombreTamagotchi + " Comienza a comer una sandia");
 		try {
 			while (tiempoAleatorioGenerado >= 5) {
-				tiempoAleatorioGenerado = ThreadLocalRandom.current().nextInt(100, 1001);
-				Thread.sleep(tiempoAleatorioGenerado);
+				tiempoAleatorioGenerado = ThreadLocalRandom.current().nextInt(2, 6);
+				System.out.println(this.nombreTamagotchi + " tardare " + tiempoAleatorioGenerado + " seg");
 				
 			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			System.out.println(this.nombreTamagotchi + " fue interrumpido mientras comía.");
 		} finally {
 			System.out.println(this.nombreTamagotchi + ": He terminado de comer la sandia");
@@ -77,65 +105,50 @@ public class Tamagotchis extends Thread implements Runnable {
 		}
 		
 	}
-	
-	public void limpiar() {
-		System.out.println(this.nombreTamagotchi + " se esta limpiando");
-		
-		this.estadoActual = Estado.LIMPIANDO;
-		try {
-				Thread.sleep(5_000);
-		} catch (InterruptedException e) {
-			System.out.println("Tamagotchi " + this.nombreTamagotchi + " fue interrumpido mientras se limpiaba.");
-		} finally {
-			System.out.println("Tamagotchi " + this.nombreTamagotchi + ": He terminado de limpiarme");
-	        this.estadoActual = Estado.OCIOSO;
-		}
-		
-		
-	}
-	boolean vivo;
-	public void iniciarContadorSuciedad(Scanner teclado, Thread hiloTamagotchi) {
-	        while (vivo && suciedad < 10) {
-	            try {
-	                Thread.sleep(20_000);
-	                suciedad = GestorTamagotchis.SUMA_SUCIEDAD +1;
-	                System.out.println(this.nombreTamagotchi + " - Suciedad: " + suciedad + "/10");
+	boolean vivo = true;
+	public void limpiar(Scanner teclado, Thread hiloTamagotchi) {
+	    while (this.vivo && this.suciedad < 10) {
+	        try {
+	            Thread.sleep(20_000);
+	            this.suciedad = this.suciedad +1;
+	            System.out.println(this.nombreTamagotchi + " - Suciedad: " + this.suciedad + "/10");
 
-	                if (suciedad == 5) {
-	                	System.out.println("Aviso " + this.nombreTamagotchi + " está empezando a estar muy sucio");
-	                				System.out.print("Quieres limpiarlo? (s/n)");
-	                				String respuestaCuidador = teclado.nextLine().toLowerCase();
-	                				if (respuestaCuidador.equalsIgnoreCase("s")) {
-	                					limpiar();
-	                				}
+	            if (this.suciedad >= 5 && this.suciedad < 10) {
+	                System.out.println("Aviso: " + this.nombreTamagotchi + " está empezando a estar muy sucio");
+	                System.out.print("¿Quieres limpiarlo? (s/n): ");
+	                String respuesta = teclado.nextLine().trim();
+
+	                if (respuesta.equalsIgnoreCase("s")) {
+	                    System.out.println(this.nombreTamagotchi + " se está limpiando...");
+	                    this.estadoActual = Estado.LIMPIANDO;
+
+	                    try {
+	                        Thread.sleep(5_000);
+	                        this.suciedad = 0;
+	                        System.out.println(this.nombreTamagotchi + ": He terminado de limpiarme");
+	                    } catch (InterruptedException e) {
+	                        System.out.println(this.nombreTamagotchi + " fue interrumpido mientras se limpiaba");
+	                    } finally {
+	                        this.estadoActual = Estado.OCIOSO;
+	                    }
 	                }
-	            } catch (InterruptedException e) {
-	                break;
 	            }
+
+	        } catch (InterruptedException e) {
+	            break;
 	        }
-	        if (suciedad >= 10) {
-	            morirPorSuciedad(hiloTamagotchi);
+	    }
+
+	    if (this.suciedad >= 10) {
+	        this.vivo = false;
+	        this.estadoActual = Estado.MUERTO;
+	        System.out.println(this.nombreTamagotchi + " ha muerto por suciedad.");
+	        if (hiloTamagotchi != null) {
+	            hiloTamagotchi.interrupt();
 	        }
-	}
-	public void morirPorSuciedad(Thread hiloTamagotchi) {
-		
-        this.vivo = false;
-        this.estadoActual = Estado.MUERTO;
-        System.out.println(this.nombreTamagotchi + " ha muerto por suciedad");
-		hiloTamagotchi.interrupt();	
+	    }
 	}
 	
-	public void contadorVida() {
-		
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-        System.out.println("Tamagotchi iniciado. Vida: 5 minutos");
-
-        scheduler.schedule(() -> {
-        		System.out.println("¡Han pasado 5 minutos! El tamagotchi da un aviso y muere");
-        		scheduler.shutdown();
-        }, 5, TimeUnit.MINUTES);
-	}
 	public void morir(String str) {
 		if (str.contains("orden")) {
 			
@@ -144,7 +157,7 @@ public class Tamagotchis extends Thread implements Runnable {
 	
 	
 	
-	private static final Estado[] ACCIONES = { Estado.COMIENDO, Estado.JUGANDO, Estado.LIMPIANDO };
+	private static final Estado[] ACCIONES = { Estado.COMIENDO, Estado.JUGANDO, Estado.LIMPIANDO, Estado.OCIOSO };
 
 	public static Estado accionAleatoria() {
 	    return ACCIONES[ThreadLocalRandom.current().nextInt(ACCIONES.length)];
