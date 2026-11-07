@@ -14,6 +14,14 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner scn =  new Scanner(System.in);
 		try {
+			
+			Map<Integer, Tamagotchis> mapaTamagotchis = new HashMap<>();
+
+	        for (int i = 0; i < GestorTamagotchis.NUMERO_TAMAGOTCHIS; i++) {
+	            Tamagotchis tama = new Tamagotchis(); 
+	            mapaTamagotchis.put(tama.getNombreTamagotchi(), tama);
+	            Thread hilo = new Thread(tama);
+	        }
 			ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 	        System.out.println("Tamagotchi iniciado. Vida: 5 minutos.");
@@ -23,16 +31,16 @@ public class Main {
 	            scheduler.shutdown();
 	        }, 5, TimeUnit.MINUTES);
 
-	        Map<Integer, Tamagotchis> mapaTamagotchis = new HashMap<>();
+	        
 
 	        for (int i = 0; i < GestorTamagotchis.NUMERO_TAMAGOTCHIS; i++) {
 	            Tamagotchis tama = new Tamagotchis(); 
-	            mapaTamagotchis.put(tama.getId(), tama);
+	            mapaTamagotchis.put(tama.getNombreTamagotchi(), tama);
 	            Thread hilo = new Thread(tama);
 	        }
 
 	        for (Tamagotchis t : mapaTamagotchis.values()) {
-	            System.out.println("Tamagotchi ID " + t.getId() + " está en estado: " + t.getEstado());
+	            System.out.println(t.getNombreTamagotchi() + " está en estado: " + t.getEstado());
 	            if (t.getEstado() == Estado.JUGANDO) {
 	            t.jugar(scn);
 	            }
