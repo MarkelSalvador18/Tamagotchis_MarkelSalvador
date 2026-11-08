@@ -40,7 +40,8 @@ public class Main {
 			        
 			        String clave = "Tamagotchi-" + opcionTama;
 			        Tamagotchis tamaElegido = mapaTamagotchis.get(clave);
-
+			        
+			        System.out.println();
 			        System.out.println("Has elegido el " + clave);
 
 			        boolean volver = false;
@@ -74,11 +75,11 @@ public class Main {
 			                    break;
 
 			                case "5":
-			                    if (tamaElegido.getEstado() == Tamagotchis.Estado.OCIOSO) {
-			                        tamaElegido.morir("orden del cuidador");
-			                        System.out.println(clave + " ha sido eliminado");
+			                	boolean eliminado = tamaElegido.morir("orden del cuidador");
+			                	if (eliminado) {
+			                        System.out.println(clave + " ha sido destruido");
 			                    } else {
-			                        System.out.println("Error: No puedes matarlo: está " + tamaElegido.getEstado());
+			                        System.out.println("Se cancela la opción");
 			                    }
 			                    break;
 

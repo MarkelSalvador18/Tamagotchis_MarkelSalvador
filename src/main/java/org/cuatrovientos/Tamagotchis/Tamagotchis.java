@@ -14,8 +14,9 @@ public class Tamagotchis extends Thread implements Runnable {
 
 	private String nombreTamagotchi;
 	private int suciedad;
-	private Estado estadoActual;
+	private volatile Estado estadoActual;
 	private final long tiempoNacimiento = System.currentTimeMillis();
+	private volatile Thread hiloPropio;
 	
 	public Tamagotchis(String nombre) {
 		this.nombreTamagotchi = nombre;
@@ -70,12 +71,12 @@ public class Tamagotchis extends Thread implements Runnable {
                 }
 
                 this.suciedad = this.suciedad +1;
-                System.out.println("\n[" + this.nombreTamagotchi + "] Suciedad acumulada: " + this.suciedad + "/10");
+                System.out.println(this.nombreTamagotchi + "] Suciedad acumulada: " + this.suciedad + "/10");
 
                 if (this.suciedad == 5) {
-                    System.out.println("[AVISO] " + this.nombreTamagotchi + " está bastante sucio. Conviene limpiarlo.");
+                    System.out.println(this.nombreTamagotchi + " está bastante sucio, Conviene limpiarlo");
                 } else if (this.suciedad >= 10) {
-                    System.out.println("\n[" + this.nombreTamagotchi + "] Ha muerto por exceso de suciedad.");
+                    System.out.println(this.nombreTamagotchi + " ha muerto por exceso de suciedad");
                     morir("suciedad");
                     break;
                 }
@@ -105,7 +106,7 @@ public class Tamagotchis extends Thread implements Runnable {
 		}
 		
 	}
-	boolean vivo = true;
+	private volatile boolean vivo = true;
 	public void limpiar(Scanner teclado, Thread hiloTamagotchi) {
 	    while (this.vivo && this.suciedad < 10) {
 	        try {
@@ -149,10 +150,26 @@ public class Tamagotchis extends Thread implements Runnable {
 	    }
 	}
 	
-	public void morir(String str) {
-		if (str.contains("orden")) {
-			
+	public boolean morir(String motivo) {
+		if (motivo.contains("orden")) {
+			if (this.estadoActual != Estado.OCIOSO) {
+				System.out.println("No puedes matar a " + this.nombreTamagotchi + " esta en " + this.estadoActual);
+				return false;
+			}
 		}
+			if (motivo.contains("orden") || motivo.contains("vejez") || motivo.contains("suciedad")) {
+	            this.vivo = false;
+	            this.estadoActual = Estado.MUERTO;
+	            System.out.println(this.nombreTamagotchi + " ha muerto por: " + motivo);
+
+	            
+	            if (this.hiloPropio != null) {
+	                this.hiloPropio.interrupt();
+	            }
+	            return true;
+	        }
+			return false;
+		
 	}
 	
 	
