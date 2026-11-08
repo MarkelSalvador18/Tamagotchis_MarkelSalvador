@@ -70,30 +70,26 @@ public class Tamagotchis extends Thread implements Runnable {
                 if (ahora - this.tiempoNacimiento >= GestorTamagotchis.TIEMPO_VIDA_MS) {
                 	System.out.println("Han pasado 5 minutos, " + this.nombreTamagotchi + " muere");
                 finalizarVida();
+                break;
                 }
-
-                if (System.currentTimeMillis() - this.tiempoNacimiento >= GestorTamagotchis.TIEMPO_VIDA_MS) {
-                    System.out.println("aviso, han pasado 5 minutos! " + this.nombreTamagotchi + " ha muerto de vejez");
-                    morir("vejez");
-                    break;
-                }
-
+                if (ahora - aumentoSuciedad >= GestorTamagotchis.TIEMPO_SUCIEDAD_MS);
+                aumentoSuciedad = ahora;
                 this.suciedad = this.suciedad +1;
-                System.out.println(this.nombreTamagotchi + "] Suciedad acumulada: " + this.suciedad + "/10");
-
-                if (this.suciedad == 5) {
-                    System.out.println(this.nombreTamagotchi + " está bastante sucio, Conviene limpiarlo");
-                } else if (this.suciedad >= 10) {
-                    System.out.println(this.nombreTamagotchi + " ha muerto por exceso de suciedad");
-                    morir("suciedad");
-                    break;
-                }
-
-            } catch (InterruptedException e) {
-                break; 
-            }
+                		if (this.suciedad == 5) {
+                			System.out.println(this.nombreTamagotchi + " esta sucio");
+                			
+                		} else if (this.suciedad >= 10) {
+                			System.out.println(this.nombreTamagotchi + " ha muerto por suciedad");
+                			finalizarVida();
+                			break;
+                		}
+                
+            		} catch (InterruptedException e) {
+                        break; 
+                    }
+           } 
         }
-	}
+	
 	
 	
 	
@@ -196,27 +192,21 @@ public class Tamagotchis extends Thread implements Runnable {
 	    }
 	}
 	
-	public boolean morir(String motivo) {
-		if (motivo.contains("orden")) {
-			if (this.estadoActual != Estado.OCIOSO) {
-				System.out.println("No puedes matar a " + this.nombreTamagotchi + " esta en " + this.estadoActual);
-				return false;
-			}
-		}
-			if (motivo.contains("orden") || motivo.contains("vejez") || motivo.contains("suciedad")) {
-	            this.vivo = false;
-	            this.estadoActual = Estado.MUERTO;
-	            System.out.println(this.nombreTamagotchi + " ha muerto por: " + motivo);
 
-	            
-	            if (this.hiloPropio != null) {
-	                this.hiloPropio.interrupt();
-	            }
-	            return true;
-	        }
+	public boolean matar() {
+		if (!this.vivo) {
+			System.out.println(this.nombreTamagotchi + " ya esta muerto");
 			return false;
-		
+		}
+		if (this.estadoActual != Estado.OCIOSO) {
+			System.out.println(this.nombreTamagotchi + " esta ocupado " + this.estadoActual);
+			return false;
+		}
+		finalizarVida();
+		System.out.println(this.nombreTamagotchi + " ha sido destruido por el cuidador ");
+		return true;
 	}
+	
 	public boolean puedeRealizarAccion() {
 		if (!this.vivo || this.estadoActual == Estado.MUERTO) {
 			System.out.println(this.nombreTamagotchi + " esta muerto y no puede hacer acciones");
